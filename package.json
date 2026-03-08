@@ -1,6 +1,6 @@
 {
   "name": "@adametherzlab/cutlist-optimizer",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Board cutlist optimizer — minimize waste from sheet goods with layout diagrams",
   "type": "module",
   "main": "./dist/index.js",

@@ -134,7 +134,10 @@ function findBestFreeRect(
   let rotated = false;
 
   for (const rect of freeRects) {
-    if (pieceLength <= rect.width && pieceWidth <= rect.height) {
+    // Check non-rotated placement (allowed for longitudinal or any)
+    if ((grain === "longitudinal" || grain === "any") &&
+        pieceLength <= rect.width &&
+        pieceWidth <= rect.height) {
       const area = rect.width * rect.height;
       if (area < bestArea) {
         bestArea = area;
@@ -143,7 +146,11 @@ function findBestFreeRect(
       }
     }
 
-    if (allowRotation && pieceWidth <= rect.width && pieceLength <= rect.height) {
+    // Check rotated placement (allowed if rotation is enabled and grain is cross or any)
+    if (allowRotation &&
+        (grain === "cross" || grain === "any") &&
+        pieceWidth <= rect.width &&
+        pieceLength <= rect.height) {
       const area = rect.width * rect.height;
       if (area < bestArea) {
         bestArea = area;
