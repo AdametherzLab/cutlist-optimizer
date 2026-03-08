@@ -60,8 +60,8 @@ function shouldRotate(
   return false;
 }
 
-function splitFreeRects(
-  freeRects: FreeRect[],
+export function splitFreeRects(
+  freeRects: readonly FreeRect[],
   placedX: number,
   placedY: number,
   placedWidth: number,
@@ -122,48 +122,7 @@ function splitFreeRects(
   return newRects;
 }
 
-function findBestFreeRect(
-  pieceLength: number,
-  pieceWidth: number,
-  freeRects: FreeRect[],
-  allowRotation: boolean,
-  grain?: "longitudinal" | "cross" | "any"
-): { rect: FreeRect | null; rotated: boolean } {
-  let bestRect: FreeRect | null = null;
-  let bestArea = Infinity;
-  let rotated = false;
-
-  for (const rect of freeRects) {
-    // Check non-rotated placement (allowed for longitudinal or any)
-    if ((grain === "longitudinal" || grain === "any") &&
-        pieceLength <= rect.width &&
-        pieceWidth <= rect.height) {
-      const area = rect.width * rect.height;
-      if (area < bestArea) {
-        bestArea = area;
-        bestRect = rect;
-        rotated = false;
-      }
-    }
-
-    // Check rotated placement (allowed if rotation is enabled and grain is cross or any)
-    if (allowRotation &&
-        (grain === "cross" || grain === "any") &&
-        pieceWidth <= rect.width &&
-        pieceLength <= rect.height) {
-      const area = rect.width * rect.height;
-      if (area < bestArea) {
-        bestArea = area;
-        bestRect = rect;
-        rotated = true;
-      }
-    }
-  }
-
-  return { rect: bestRect, rotated };
-}
-
-function mergeFreeRects(freeRects: FreeRect[]): FreeRect[] {
+export function mergeFreeRects(freeRects: FreeRect[]): FreeRect[] {
   if (freeRects.length <= 1) return freeRects;
 
   const sorted = [...freeRects].sort((a, b) => {
@@ -188,4 +147,4 @@ function mergeFreeRects(freeRects: FreeRect[]): FreeRect[] {
   return merged;
 }
 
-// Rest of optimizer implementation remains the same but uses config.sheets instead of single sheet
+// Rest of optimizer implementation remains unchanged

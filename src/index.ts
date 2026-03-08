@@ -20,3 +20,4 @@ export {
   computeWasteMap,
   generateReport
 } from "./layout.js";
+export { LayoutEditor } from "./editor.js";
