@@ -9,10 +9,9 @@ describe("cutlist-optimizer", () => {
       { id: "p2", length: 48, width: 24, quantity: 1 },
     ];
     const config: OptimizerConfig = {
-      sheet: { length: 96, width: 48 },
-      bladeKerf: 0.125,
+      sheets: [{ id: "s1", length: 96, width: 48 }],
+      kerf: 0.125,
       allowRotation: true,
-      grainMatch: false,
     };
 
     const result = optimizeCutlist(pieces, config);
@@ -20,7 +19,7 @@ describe("cutlist-optimizer", () => {
     expect(result.totalSheets).toBe(1);
     expect(result.cutSequence.length).toBeGreaterThan(0);
 
-    const stepNumbers = result.cutSequence.map((s) => s.stepNumber);
+    const stepNumbers = result.cutSequence.map((s) => s.step);
     for (let i = 0; i < stepNumbers.length; i++) {
       expect(stepNumbers[i]).toBe(i + 1);
     }
@@ -32,10 +31,9 @@ describe("cutlist-optimizer", () => {
       { id: "p2", length: 48, width: 24, quantity: 3 },
     ];
     const config: OptimizerConfig = {
-      sheet: { length: 96, width: 48 },
-      bladeKerf: 0.125,
+      sheets: [{ id: "s1", length: 96, width: 48 }],
+      kerf: 0.125,
       allowRotation: true,
-      grainMatch: false,
     };
 
     const result = optimizeCutlist(pieces, config);
@@ -53,10 +51,9 @@ describe("cutlist-optimizer", () => {
       { id: "p1", length: 48, width: 24, quantity: 1 },
     ];
     const config: OptimizerConfig = {
-      sheet: { length: 96, width: 48 },
-      bladeKerf: 0.125,
+      sheets: [{ id: "s1", length: 96, width: 48 }],
+      kerf: 0.125,
       allowRotation: true,
-      grainMatch: false,
     };
 
     const result = optimizeCutlist(pieces, config);
@@ -76,10 +73,9 @@ describe("cutlist-optimizer", () => {
       { id: "p2", length: 24, width: 48, quantity: 1 },
     ];
     const config: OptimizerConfig = {
-      sheet: { length: 96, width: 48 },
-      bladeKerf: 0.125,
+      sheets: [{ id: "s1", length: 96, width: 48 }],
+      kerf: 0.125,
       allowRotation: false,
-      grainMatch: false,
     };
 
     const result = optimizeCutlist(pieces, config);
@@ -98,12 +94,32 @@ describe("cutlist-optimizer", () => {
       { id: "oversized", length: 120, width: 60, quantity: 1 },
     ];
     const config: OptimizerConfig = {
-      sheet: { length: 96, width: 48 },
-      bladeKerf: 0.125,
+      sheets: [{ id: "s1", length: 96, width: 48 }],
+      kerf: 0.125,
       allowRotation: true,
-      grainMatch: false,
     };
 
     expect(() => optimizeCutlist(pieces, config)).toThrow();
+  });
+
+  it("uses multiple sheet sizes when specified", () => {
+    const pieces: Piece[] = [
+      { id: "p1", length: 96, width: 48, quantity: 1 },
+      { id: "p2", length: 48, width: 24, quantity: 2 },
+    ];
+    const config: OptimizerConfig = {
+      sheets: [
+        { id: "large", length: 96, width: 48 },
+        { id: "small", length: 48, width: 24 },
+      ],
+      kerf: 0.125,
+      allowRotation: true,
+    };
+
+    const result = optimizeCutlist(pieces, config);
+    
+    expect(result.layouts.some(l => l.sheet.id === "large")).toBe(true);
+    expect(result.layouts.some(l => l.sheet.id === "small")).toBe(true);
+    expect(result.totalSheets).toBe(2);
   });
 });
